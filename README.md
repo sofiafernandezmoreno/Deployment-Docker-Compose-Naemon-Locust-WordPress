@@ -11,8 +11,9 @@ Optional Part:
 
 __Warning: Since Naemon updates can include significant one-way changes, you shouldn't use the "latest" tag outside of testing. All examples in this documentation expect that the you will replace "TAG" with a recent version__
 #Create image
-
+```
 docker build -t chui274/naemontfg .
+```
 ## Quick start
 
 The command below will setup a Naemon container with email notification support through an SMTP server, with an externalized configuration set for easy container replacement.
