@@ -11,7 +11,7 @@ Optional Part:
 
 __Warning: Since Naemon updates can include significant one-way changes, you shouldn't use the "latest" tag outside of testing. All examples in this documentation expect that the you will replace "TAG" with a recent version__
 
-##Create image
+## Create image
 ```
 docker build -t chui274/naemontfg .
 ```
