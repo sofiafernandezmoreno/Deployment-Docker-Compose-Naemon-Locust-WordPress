@@ -1,0 +1,10 @@
+version: '3'
+services:
+  naemon:
+    build: .
+    
+    ports:
+      - "32768:80"
+    image: "chui274:naemontfg"
+      
+    
