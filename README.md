@@ -29,6 +29,12 @@ The command below will setup a Naemon container with email notification support 
   -v /somepath/naemon_mnt:/data chui274/naemontfg:TAG
 ```
 
+## Run composer
+
+```
+ docker-compose up
+```
+
 ## Environment Variables
 
 ### SMTP support
