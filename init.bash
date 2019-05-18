@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Initialize the custom data directory layout
+# Inicialización volumen data
 #
 source /data_dirs.env
 

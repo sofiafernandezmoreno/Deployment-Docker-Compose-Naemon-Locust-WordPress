@@ -1,10 +1,16 @@
-version: '3'
+version: '3.7'
 services:
+
+
+# Naemon
   naemon:
     build: .
     
     ports:
       - "32768:80"
-    image: "chui274:naemontfg"
-      
+    image: "pruebanaemonsincomplementos:latest"
+
+    
+  
+
     

@@ -39,30 +39,7 @@ RUN apt-get update &&\
     nagios-nrpe-plugin\
     naemon=1.0.10
 
-############################################################
-# If modifying this build script, add cutom packages here! #
-############################################################
 
-#
-# Install jabber notification support through the sendxmpp
-# project
-#
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y sendxmpp
-ADD notify_jabber_commands.cfg /etc/naemon/conf.d/notify_jabber_commands.cfg
-
-#
-# Install the check_http_json plugin
-#
-ADD https://raw.githubusercontent.com/drewkerrigan/nagios-http-json/v1.3/check_http_json.py /usr/lib/naemon/plugins/check_http_json.py
-RUN sync && chmod 755 /usr/lib/naemon/plugins/check_http_json.py
-
-
-#
-# Enable the from line to be overridden with the ssmtp service
-#
-RUN  sed -i 's/^#\(FromLineOverride=.*\)/FromLineOverride=YES/' /etc/ssmtp/ssmtp.conf
-
-ADD check_nrpe.cfg /etc/naemon/conf.d/check_nrpe.cfg
 ADD thruk_root_redirect.conf /etc/apache2/conf-enabled/
 
 #
