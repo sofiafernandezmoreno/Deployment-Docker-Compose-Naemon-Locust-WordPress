@@ -8,7 +8,7 @@ services:
     
     ports:
       - "32768:80"
-    image: "pruebanaemonsincomplementos:latest"
+    image: "chui274/naemontfg"
 
     
   
