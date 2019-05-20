@@ -28,6 +28,9 @@ docker build -t chui274/naemontfg .
 La configuración de Naemon puede ser encontrada en el volumen  `/data/etc/naemon/` y puede ser gestionada a través de su interfaz de monitorización Thruk o el sistema de archivos propio de Naemon.
 
 
+# Proxima versión: Realización de pruebas de carga a través de la herramienta Locust
+
+
 
 
 
