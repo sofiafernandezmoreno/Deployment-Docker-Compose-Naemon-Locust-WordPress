@@ -29,9 +29,9 @@ RUN apt-get update && \
 # Instal the GPG key for the labs.consol.de repository and install 
 # the repository
 #
-RUN   curl -s "https://labs.consol.de/repo/stable/RPM-GPG-KEY" | apt-key add - && \
-      gpg --keyserver keys.gnupg.net --recv-keys F8C1CA08A57B9ED7 && \
-	  gpg --armor --export F8C1CA08A57B9ED7 | apt-key add - && \
+RUN   curl -s "https://labs.consol.de/repo/stable/RPM-GPG-KEY" | apt-key add -
+RUN   gpg --keyserver keys.gnupg.net --recv-keys F8C1CA08A57B9ED7
+RUN	  gpg --armor --export F8C1CA08A57B9ED7 | apt-key add - && \
 	  echo "deb http://labs.consol.de/repo/stable/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/labs-consol-stable.list
 
 RUN apt-get update &&\
@@ -48,9 +48,7 @@ COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
 COPY data_dirs.env /data_dirs.env
 COPY init.bash /init.bash
 
-RUN chmod 755 /init.bash &&\
-  sync && /init.bash &&\
-  sync && rm /init.bash
+CMD ['/init.bash']
 
 #
 # Add the bootstrap script
