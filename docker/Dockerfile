@@ -29,10 +29,10 @@ RUN apt-get update && \
 # Instal the GPG key for the labs.consol.de repository and install 
 # the repository
 #
-RUN   curl -s "https://labs.consol.de/repo/stable/RPM-GPG-KEY" | apt-key add -
-RUN   gpg --keyserver keys.gnupg.net --recv-keys F8C1CA08A57B9ED7
-RUN   gpg --armor --export F8C1CA08A57B9ED7 | apt-key add -
-RUN   echo "deb http://labs.consol.de/repo/stable/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/labs-consol-stable.list
+RUN   curl -s "https://labs.consol.de/repo/stable/RPM-GPG-KEY" | apt-key add - && \
+      gpg --keyserver keys.gnupg.net --recv-keys F8C1CA08A57B9ED7 && \
+	  gpg --armor --export F8C1CA08A57B9ED7 | apt-key add - && \
+	  echo "deb http://labs.consol.de/repo/stable/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/labs-consol-stable.list
 
 RUN apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -40,13 +40,13 @@ RUN apt-get update &&\
     naemon=1.0.10
 
 
-ADD thruk_root_redirect.conf /etc/apache2/conf-enabled/
+COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
 
 #
 # Perform the data directory initialization
 #
-ADD data_dirs.env /data_dirs.env
-ADD init.bash /init.bash
+COPY data_dirs.env /data_dirs.env
+COPY init.bash /init.bash
 
 RUN chmod 755 /init.bash &&\
   sync && /init.bash &&\
@@ -55,7 +55,7 @@ RUN chmod 755 /init.bash &&\
 #
 # Add the bootstrap script
 #
-ADD run.bash /run.bash
+COPY run.bash /run.bash
 RUN chmod 755 /run.bash
 
 #

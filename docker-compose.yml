@@ -1,16 +1,13 @@
 version: '3.7'
 services:
-
-
 # Naemon
   naemon:
-    build: .
-    
+    build: ./docker
     ports:
       - "32768:80"
     image: "chui274/naemontfg"
-
-    
-  
-
-    
+    volumes: 
+      - data_naemon:/data
+volumes:
+  data_naemon:
+    driver: local
