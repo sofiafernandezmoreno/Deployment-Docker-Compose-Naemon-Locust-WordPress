@@ -48,7 +48,9 @@ COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
 COPY data_dirs.env /data_dirs.env
 COPY init.bash /init.bash
 
-CMD ['/init.bash']
+RUN chmod 755 /init.bash &&\
+    sync && sh /init.bash &&\
+    sync && rm /init.bash
 
 #
 # Add the bootstrap script
