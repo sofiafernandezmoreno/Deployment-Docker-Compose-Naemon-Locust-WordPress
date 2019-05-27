@@ -64,6 +64,8 @@ RUN chmod 755 /run.bash
 VOLUME ["/data"]
 
 # Expose ports for sharing
+EXPOSE 3
+
 EXPOSE 80/tcp
 
 ENTRYPOINT ["/run.bash"]
