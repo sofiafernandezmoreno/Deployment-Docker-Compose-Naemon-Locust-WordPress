@@ -15,6 +15,13 @@ docker build -t chui274/naemontfg .
  docker-compose up
 ```
 
+## Run compose with 3 worker instances
+
+```
+ docker-compose up --scale locust-worker=3
+
+```
+
 ## Variables de entorno
 
 

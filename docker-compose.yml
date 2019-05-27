@@ -1,16 +1,25 @@
 version: '3.7'
 services:
-
-
 # Naemon
   naemon:
-    build: .
-    
+    build: ./docker
     ports:
-      - "32768:80"
+      - "3:80"
     image: "chui274/naemontfg"
-
-    
+    volumes: 
+      - data_naemon:/data
   
-
-    
+  locust-master:
+    image: swernst/locusts
+    volumes:
+      - ./scripts:/scripts
+    ports:
+      - "8089:8089"
+  locust-worker:
+    image: swernst/locusts
+    command: "--master-host=locust-master"
+    volumes:
+      - ./scripts:/scripts
+volumes:
+  data_naemon:
+    driver: local

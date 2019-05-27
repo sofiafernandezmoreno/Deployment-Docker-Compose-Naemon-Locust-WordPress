@@ -6,7 +6,7 @@ class UserBehavior(TaskSet):
       self.login() 
     @task()   
     def login(self):
-        self.client.post("/cgi-bin/login.cgi",{"username":"thrukadmin","password":"thrukadmin"})
+        self.client.get("/cgi-bin/login.cgi",{"username":"thrukadmin","password":"thrukadmin"})
     
     @task()
     def host(self):
