@@ -8,8 +8,8 @@ services:
     image: "chui274/naemontfg"
     volumes: 
       - data_naemon:/data
-    environment:
-      NAEMON_HOST: hola
+    #environment:
+     # NAEMON_HOST: hola
   
   locust-master:
     image: swernst/locusts
