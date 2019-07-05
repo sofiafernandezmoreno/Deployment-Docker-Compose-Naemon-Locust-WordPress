@@ -4,6 +4,7 @@
 source /data_dirs.env
 DATA_PATH=/data
 
+echo "data { $1 }" > /etc/naemon/conf.d/host.cfg
 for datadir in "${DATA_DIRS[@]}"; do
   if [ ! -e "${DATA_PATH}/${datadir#/*}" ]
   then
@@ -63,7 +64,7 @@ fi
 function salida_exitosa(){
   /etc/init.d/apache2 stop
   pkill naemon
-  exit $1
+  exit 0
 }
 
 #

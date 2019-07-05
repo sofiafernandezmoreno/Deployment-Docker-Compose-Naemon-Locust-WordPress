@@ -8,6 +8,8 @@ services:
     image: "chui274/naemontfg"
     volumes: 
       - data_naemon:/data
+    environment:
+      NAEMON_HOST: hola
   
   locust-master:
     image: swernst/locusts
@@ -15,11 +17,50 @@ services:
       - ./scripts:/scripts
     ports:
       - "8089:8089"
+    depends_on:
+      - wordpress
   locust-worker:
     image: swernst/locusts
     command: "--master-host=locust-master"
     volumes:
       - ./scripts:/scripts
+  
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+        WORDPRESS_DB_HOST: db:3306
+        WORDPRESS_DB_USER: wordpress
+        WORDPRESS_DB_PASSWORD: wordpress
+        WORDPRESS_DB_NAME: wordpress
+  
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password 
+
 volumes:
+  db_data: {}
   data_naemon:
     driver: local

@@ -58,6 +58,8 @@ RUN chmod 755 /init.bash &&\
 COPY run.bash /run.bash
 RUN chmod 755 /run.bash
 
+ENV NAEMON_HOST localhost
+
 #
 # All data is stored on the root data volme
 #
@@ -68,4 +70,4 @@ EXPOSE 3
 
 EXPOSE 80/tcp
 
-ENTRYPOINT ["/run.bash"]
+ENTRYPOINT /run.bash ${NAEMON_HOST}

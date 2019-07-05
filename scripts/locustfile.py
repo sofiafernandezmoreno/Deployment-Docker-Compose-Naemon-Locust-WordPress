@@ -6,7 +6,7 @@ class UserBehavior(TaskSet):
         self.client.get('/')
     @task(1)
     def host(self):
-        self.client.get('/thruk/#cgi-bin/status.cgi?hostgroup=all&style=hostdetail')
+        self.client.get('/?p=1')
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior
     min_wait = 5000
