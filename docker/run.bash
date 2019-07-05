@@ -4,7 +4,7 @@
 source /data_dirs.env
 DATA_PATH=/data
 
-#echo "data { $1 }" > /etc/naemon/conf.d/host.cfg
+#echo "data{ $1 }" > /etc/naemon/conf.d/host.cfg
 
 for datadir in "${DATA_DIRS[@]}"; do
   if [ ! -e "${DATA_PATH}/${datadir#/*}" ]
