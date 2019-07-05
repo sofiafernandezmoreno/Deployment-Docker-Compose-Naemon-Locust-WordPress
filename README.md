@@ -1,7 +1,7 @@
 # Docker Naemon TFG Sofía Fernández Moreno
 
 [Naemon](http://www.naemon.org) imagen lista para su despliegue. 
-1. Configuración de naemon a través del volumen `/data` acceso desde /var/lib/docker/volumes
+1. Configuración de naemon a través del volumen `/data` acceso desde `/var/lib/docker/volumes`
 
 
 ## Creación de imagen
