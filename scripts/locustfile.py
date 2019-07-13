@@ -1,6 +1,18 @@
 from locust import HttpLocust, TaskSet, task
 
+def login(l):
+    l.client.post("/login", {"username":"naemon", "password":"naemon"})
+
+def logout(l):
+    l.client.post("/logout", {"username":"naemon", "password":"naemon"})
+
+
 class UserBehavior(TaskSet):
+    def on_start(self):
+        login(self)
+
+    def on_stop(self):
+        logout(self)
     @task(2)
     def root(self):
         self.client.get('/')
