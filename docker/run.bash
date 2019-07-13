@@ -18,28 +18,6 @@ for datadir in "${DATA_DIRS[@]}"; do
   fi
 done
 
-#
-# # En caso de versiones antiguas de Naemon
-# # 
-# if [ -e /etc/naemon/htpasswd ]
-# then
-#   echo "UPGRADE: Moving the htpasswd file to the new location..."
-#   mv /etc/naemon/htpasswd /etc/thruk/htpasswd
-#   # We assume the naemon password was set in an upgrade situation
-#   touch /etc/thruk/._install_script_password_set
-# fi
-
-# #
-# # Para establecer contraseña random
-# #
-# if [ ! -e /etc/thruk/._install_script_password_set ]
-# then
-#   RANDOM_PASS=`date +%s | md5sum | base64 | head -c 8`
-#   WEB_ADMIN_PASSWORD=${WEB_ADMIN_PASSWORD:-$RANDOM_PASS}
-#   htpasswd -bc /etc/thruk/htpasswd thrukadmin ${WEB_ADMIN_PASSWORD}
-#   echo "Set the thrukadmin password to: $WEB_ADMIN_PASSWORD"
-#   touch /etc/thruk/._install_script_password_set
-# fi
 
 
 #

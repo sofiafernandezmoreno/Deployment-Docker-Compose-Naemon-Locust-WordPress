@@ -58,9 +58,15 @@ RUN chmod 755 /init.bash &&\
 COPY run.bash /run.bash
 RUN chmod 755 /run.bash
 
-#ENV NAEMON_HOST localhost
+#Add file host.cfg with the configuration of the new host in the directory /etc/naemon/
+ADD hosts.cfg /etc/naemon/conf.d/hosts.cfg
 
-#
+#Add file services.cfg with the configuration of the new service in the directory /etc/naemon/
+ADD services.cfg /etc/naemon/conf.d/services.cfg
+
+#Remove directoy template from /etc/naemon/conf.d/template
+
+#RUN rm /etc/naemon/conf.d/templates
 # All data is stored on the root data volme
 #
 VOLUME ["/data"]
