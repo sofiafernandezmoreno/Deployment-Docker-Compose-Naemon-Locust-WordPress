@@ -59,10 +59,10 @@ COPY run.bash /run.bash
 RUN chmod 755 /run.bash
 
 #Add file host.cfg with the configuration of the new host in the directory /etc/naemon/
-ADD hosts.cfg /etc/naemon/conf.d/hosts.cfg
+#ADD hosts.cfg /etc/naemon/conf.d/hosts.cfg
 
 #Add file services.cfg with the configuration of the new service in the directory /etc/naemon/
-ADD services.cfg /etc/naemon/conf.d/services.cfg
+#ADD services.cfg /etc/naemon/conf.d/services.cfg
 
 #Remove directoy template from /etc/naemon/conf.d/template
 
