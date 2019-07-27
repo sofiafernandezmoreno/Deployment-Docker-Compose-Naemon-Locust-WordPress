@@ -22,6 +22,21 @@ docker build -t chui274/naemontfg .
 
 ```
 
+## Remove the container and default network, but preserves database.
+
+```
+ docker-compose down
+
+```
+
+
+## Remove the container and default network and database.
+
+```
+ docker-compose down --volumes
+
+```  
+
 ## Variables de entorno
 
 

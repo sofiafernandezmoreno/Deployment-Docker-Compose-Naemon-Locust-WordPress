@@ -28,6 +28,50 @@ then
   mv /etc/naemon/cgi.cfg /etc/thruk/cgi.cfg
 fi
 
+
+# #
+# # Si existe carpeta /etc/naemon/conf.d borrar archivos
+# if [ -e /etc/naemon/conf.d/contacts.cfg]
+# then
+#   echo "Remove files"
+#   rm -r /etc/naemon/conf.d/contacts.cfg
+ 
+
+# fi
+# #
+# # Si existe carpeta /etc/naemon/conf.d borrar archivos
+# if [ -e /etc/naemon/conf.d/printer.cfg]
+# then
+#   echo "Remove files"
+#   rm -r /etc/naemon/conf.d/printer.cfg
+  
+# fi
+# #
+# # Si existe carpeta /etc/naemon/conf.d borrar archivos
+# if [ -e /etc/naemon/conf.d/switch.cfg]
+# then
+#   echo "Remove files"
+  
+#   rm -r /etc/naemon/conf.d/switch.cfg
+  
+
+# fi
+# # Si existe carpeta /etc/naemon/conf.d borrar archivos
+# if [ -e /etc/naemon/conf.d/windows.cfg]
+# then
+#   echo "Remove files"
+#   rm -r /etc/naemon/conf.d/windows.cfg
+# fi
+
+# #
+# # Si existe carpeta /etc/naemon/conf.d/templates borrarla
+# #
+# if [ -e /etc/naemon/conf.d/templates ]
+# then
+#   echo "Remove directory templates"
+#   rm -R  /etc/naemon/conf.d/templates
+# fi
+#
 #
 # Establecer autorizaciones
 #
@@ -44,6 +88,8 @@ function salida_exitosa(){
   pkill naemon
   exit $1
 }
+
+
 
 #
 # Asignación de permisos para carpetas nuevas
