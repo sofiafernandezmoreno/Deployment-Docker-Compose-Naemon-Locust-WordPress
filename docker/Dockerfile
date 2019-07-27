@@ -44,6 +44,7 @@ RUN rm -rf /etc/naemon/conf.d/windows.cfg
 RUN rm -rf /etc/naemon/conf.d/switch.cfg
 RUN rm -rf /etc/naemon/conf.d/printer.cfg
 RUN rm -rf /etc/naemon/conf.d/contacts.cfg
+RUN rm -rf /etc/naemon/conf.d/localhost.cfg
 ADD hosts.cfg /etc/naemon/conf.d/hosts.cfg 
 ADD services.cfg /etc/naemon/conf.d/services.cfg 
 COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
