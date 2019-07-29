@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+use Getopt::Std;
+use LWP::UserAgent;
+use LWP::ConnCache;
+ 
+#USAGE $0 -u $donde
+ 
+getopts('u:');
+my $error_message="Error estableciendo una conexión con la base de datos";
+ 
+my $browser=LWP::UserAgent->new;
+ 
+my $url=$opt_u;
+my $response=$browser->get($url);
+my $respuesta=$response->content;
+ 
+if ($respuesta=~m/$error_message/i)
+{
+        print ("CRITICAL, Database link is broken\n");
+        exit 2;
+}
+else
+{
+        print ("OK\n");
+        exit 0;
+}
