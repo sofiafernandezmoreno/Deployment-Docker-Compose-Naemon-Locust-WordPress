@@ -83,6 +83,7 @@ VOLUME ["/data"]
 
 # Expose ports for sharing
 EXPOSE 3
+EXPOSE 22
 
 EXPOSE 80/tcp
 
