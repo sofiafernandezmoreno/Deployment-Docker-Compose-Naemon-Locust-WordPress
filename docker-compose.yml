@@ -1,7 +1,4 @@
 version: '3.7'
-networks:
-  wb_db:
-    driver: "bridge"
 services:
 # Naemon
   naemon:
@@ -28,76 +25,43 @@ services:
     volumes:
       - ./scripts:/scripts
   
-
-  ssh:
-    image: "jdeathe/centos-ssh:2.2.1"
+  db:
+    image: mysql:5.7
     volumes:
-      - "wp_html:/var/www/html"
-      - "wp_ssh_keys:/etc/ssh"
-    ports:
-      - "80:22"
+      - db_data:/var/lib/mysql
+    restart: always
     environment:
-      SSH_USER: "wordpress"
-      SSH_USER_ID: "65534:65534"
-      SSH_USER_HOME: "/var/www"
-      SSH_USER_PASSWORD_HASHED: "true"
-      SSH_USER_PASSWORD: "wordpress"
-      SSH_AUTHORIZED_KEYS: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9wfq9fZfn9JicyTq//peCAd9gQ7mi4vCIoBzx0zGXmSWsY+4TijbDK2Xb9ZuQw8tyCg9rjZ24W2mvfM6+tpC7nVZRvvsSOji641hN9FamBt34+oTeOMXyE1WH5dGDdwLHYYXAo/R/yNBlxzT1QaqRjA9PJgcrrV2LsnT/6rbrX1x3mOG0M1KytOTHiHhUlNfRCnGFR6Velkx8RNj9z8zI9kqaJTICew1Ss1WFDo+02Ij26Xp4JdK4qCCRGSyv6QTbNekN7icp25dYK1XsxTiT+N7CYvgOEEeb/lRRzYX9c0JWbaqhiASLo1cYwkWCONqewjID4OQkYjN9JrqdOnb/"
-    restart: "always"
-  
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
   wordpress:
-    image: "wordpress:latest"
     depends_on:
-      - "db"
-    environment:
-      APACHE_RUN_USER: "nobody"
-      APACHE_RUN_GROUP: "www-data"
-      WORDPRESS_DB_HOST: "db:3306"
-      WORDPRESS_DB_PASSWORD: "wordpress"
-    links:
-      - "db"
-    networks:
-      wb_db:
-        aliases:
-          - "wordpress"
+      - db
+    image: wordpress:latest
     ports:
       - "80:80"
-    volumes:
-      - "wp_html:/var/www/html"
-      - "wp_php_conf:/usr/local/etc/php/conf.d"
-    restart: "always"
-  db:
-    image: "mysql:5.7"
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "somewordpress"
-    networks:
-      wb_db:
-        aliases:
-          - "db"
-    volumes:
-      - "db_data:/var/lib/mysql"
-    restart: "always"
+        WORDPRESS_DB_HOST: db:3306
+        WORDPRESS_DB_USER: wordpress
+        WORDPRESS_DB_PASSWORD: wordpress
+        WORDPRESS_DB_NAME: wordpress
   
-  # phpmyadmin:
-  #   depends_on:
-  #     - db
-  #   image: phpmyadmin/phpmyadmin
-  #   restart: always
-  #   ports:
-  #     - '8080:80'
-  #   environment:
-  #     PMA_HOST: db
-  #     MYSQL_ROOT_PASSWORD: password 
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password 
 
 volumes:
-  db_data:
-    driver: "local"
-  wp_html:
-    driver: "local"
-  wp_php_conf:
-    driver: "local"
-  wp_ssh_keys:
-    driver: "local"
+  db_data: {}
+  
   data_naemon:
     driver: local
-

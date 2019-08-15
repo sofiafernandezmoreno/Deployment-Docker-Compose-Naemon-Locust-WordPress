@@ -39,16 +39,20 @@ RUN apt-get update &&\
     nagios-nrpe-plugin\
     naemon=1.0.10
 
-# RUN rm -rf /etc/naemon/conf.d/*
-# RUN rm -rf /etc/naemon/conf.d/templates
-# RUN rm -rf /etc/naemon/conf.d/windows.cfg
-# RUN rm -rf /etc/naemon/conf.d/switch.cfg
-# RUN rm -rf /etc/naemon/conf.d/printer.cfg
-# RUN rm -rf /etc/naemon/conf.d/contacts.cfg
-#RUN rm -rf /etc/naemon/conf.d/templates/hosts.cfg 
-#RUN rm -rf /etc/naemon/conf.d/templates/services.cfg 
+
+
+
+#
+# Install the check_wordpress plugin
+#
+ADD plugins/check_wordpress /usr/lib/naemon/plugins/check_wordpress
+RUN sync && chmod 755 /usr/lib/naemon/plugins/check_wordpress
+
+
+
  RUN rm -rf /etc/naemon/conf.d/localhost.cfg
  ADD definition/wordpresshosts.cfg /etc/naemon/conf.d/wordpresshosts.cfg 
+
  ADD definition/wordpressservices.cfg /etc/naemon/conf.d/wordpressservices.cfg 
 COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
 
@@ -68,22 +72,16 @@ RUN chmod 755 /init.bash &&\
 COPY run.bash /run.bash
 RUN chmod 755 /run.bash
 
-#Add file host.cfg with the configuration of the new host in the directory /etc/naemon/
-#ADD hosts.cfg /etc/naemon/conf.d/hosts.cfg
 
-#Add file services.cfg with the configuration of the new service in the directory /etc/naemon/
-#ADD services.cfg /etc/naemon/conf.d/services.cfg
 
-#Remove directoy template from /etc/naemon/conf.d/template
 
-#RUN rm /etc/naemon/conf.d/templates
 # All data is stored on the root data volme
 #
 VOLUME ["/data"]
 
 # Expose ports for sharing
 EXPOSE 3
-EXPOSE 22
+
 
 EXPOSE 80/tcp
 
