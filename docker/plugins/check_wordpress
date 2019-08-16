@@ -2,7 +2,7 @@
 wpout=/tmp/check_wordpress_$1.log
  
 if [ $# -eq 0 ]; then
-    echo Aufruf: $0 [www.meine-domain.de]
+    echo Llamada: $0 [www.meine-domain.de]
     exit
       else
     # /PFAD/ZUM/check_wordpress.php ANPASSEN !
