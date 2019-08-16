@@ -23,7 +23,16 @@ RUN apt-get update && \
     python-boto\
     perl\
     libwww-perl\
-    libcrypt-ssleay-perl
+    libcrypt-ssleay-perl\
+    wget \
+    make \
+    rrdtool \
+    librrds-perl \    
+    g++ \
+    php-cli \
+    php-gd \
+    php-xml \
+    libapache2-mod-php
 
 #
 # Instal the GPG key for the labs.consol.de repository and install 
@@ -41,13 +50,25 @@ RUN apt-get update &&\
 
 
 
+    # download and install pnp4nagios
+RUN wget -O pnp4nagios.zip https://github.com/lingej/pnp4nagios/archive/master.zip && \
+  unzip pnp4nagios.zip && \
+  cd pnp4nagios-master && \
+  ./configure --with-nagios-user=naemon --with-nagios-group=naemon && \
+  make all && \
+  make install && \
+  make install-webconf && \
+  make install-config && \
+  make install-init && \
+  cd ../ && \
+  rm -rf pnp4nagios.zip pnp4nagios-master
 
 #
-# Install the check_wordpress plugin
-#
-ADD plugins/check_wordpress_updates.php /var/www/html/wp-admin/check_wordpress_updates.php
-ADD plugins/check_wordpress_updates /usr/lib/naemon/plugins/check_wordpress_updates
-RUN sync && chmod 755 /usr/lib/naemon/plugins/check_wordpress_updates
+# # Install the check_wordpress plugin
+# #
+# ADD plugins/check_wordpress_updates.php /var/www/html/wp-admin/check_wordpress_updates.php
+# ADD plugins/check_wordpress_updates /usr/lib/naemon/plugins/check_wordpress_updates
+# RUN sync && chmod 755 /usr/lib/naemon/plugins/check_wordpress_updates
 
 
 
@@ -57,6 +78,17 @@ RUN sync && chmod 755 /usr/lib/naemon/plugins/check_wordpress_updates
  ADD definition/wordpressservices.cfg /etc/naemon/conf.d/wordpressservices.cfg 
 COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
 
+
+# configure pnp4nagios and thruk
+RUN mv /etc/httpd/conf.d/pnp4nagios.conf /etc/apache2/conf-available && \
+  ln -sf /etc/apache2/conf-available/pnp4nagios.conf /etc/apache2/conf-enabled/pnp4nagios.conf && \
+  sed -i "s|\$conf\['nagios_base'\].*=.*\".*\";|\$conf['nagios_base'] = \"/thruk/cgi-bin\";|" /usr/local/pnp4nagios/etc/config_local.php && \
+  sed -i 's;RewriteCond\s\+%{REQUEST_URI}\s\+\^/thruk$;RewriteCond %{REQUEST_URI}           ^/(thruk|pnp4nagios);g' /usr/share/thruk/thruk_cookie_auth.include && \
+  rm -f /usr/local/pnp4nagios/share/install.php
+
+  # set time zone
+ARG TIME_ZONE=Etc/UTC
+RUN ln -sf "/usr/share/zoneinfo/$TIME_ZONE" /etc/localtime && echo "$TIME_ZONE" > /etc/timezone
 #
 # Perform the data directory initialization
 #

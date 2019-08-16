@@ -29,48 +29,7 @@ then
 fi
 
 
-# #
-# # Si existe carpeta /etc/naemon/conf.d borrar archivos
-# if [ -e /etc/naemon/conf.d/contacts.cfg]
-# then
-#   echo "Remove files"
-#   rm -r /etc/naemon/conf.d/contacts.cfg
- 
 
-# fi
-# #
-# # Si existe carpeta /etc/naemon/conf.d borrar archivos
-# if [ -e /etc/naemon/conf.d/printer.cfg]
-# then
-#   echo "Remove files"
-#   rm -r /etc/naemon/conf.d/printer.cfg
-  
-# fi
-# #
-# # Si existe carpeta /etc/naemon/conf.d borrar archivos
-# if [ -e /etc/naemon/conf.d/switch.cfg]
-# then
-#   echo "Remove files"
-  
-#   rm -r /etc/naemon/conf.d/switch.cfg
-  
-
-# fi
-# # Si existe carpeta /etc/naemon/conf.d borrar archivos
-# if [ -e /etc/naemon/conf.d/windows.cfg]
-# then
-#   echo "Remove files"
-#   rm -r /etc/naemon/conf.d/windows.cfg
-# fi
-
-# #
-# # Si existe carpeta /etc/naemon/conf.d/templates borrarla
-# #
-# if [ -e /etc/naemon/conf.d/templates ]
-# then
-#   echo "Remove directory templates"
-#   rm -R  /etc/naemon/conf.d/templates
-# fi
 #
 #
 # Establecer autorizaciones
@@ -95,12 +54,70 @@ function salida_exitosa(){
 # Asignación de permisos para carpetas nuevas
 #
 chown -R naemon:naemon /data/etc/naemon /data/var/log/naemon
+chown -R naemon:naemon /data/usr/local/pnp4nagios/var
+
 chown -R www-data:www-data /data/var/log/thruk /data/etc/thruk
 
 #
 # Cambiar permisos para poder escribir
 #
 chmod 775 /var/cache/naemon
+
+
+# if PNP4Nagios setup not already done
+if grep -q 'process_performance_data=0' /data/etc/naemon/naemon.cfg; then
+
+echo "Started PNP4Nagios setup"
+sed -i 's|process_performance_data=0|process_performance_data=1|' /data/etc/naemon/naemon.cfg
+
+cat <<'EOT' >> /data/etc/naemon/naemon.cfg
+#
+# service performance data
+#
+service_perfdata_file=/usr/local/pnp4nagios/var/service-perfdata
+service_perfdata_file_template=DATATYPE::SERVICEPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tSERVICEDESC::$SERVICEDESC$\tSERVICEPERFDATA::$SERVICEPERFDATA$\tSERVICECHECKCOMMAND::$SERVICECHECKCOMMAND$\tHOSTSTATE::$HOSTSTATE$\tHOSTSTATETYPE::$HOSTSTATETYPE$\tSERVICESTATE::$SERVICESTATE$\tSERVICESTATETYPE::$SERVICESTATETYPE$
+service_perfdata_file_mode=a
+service_perfdata_file_processing_interval=15
+service_perfdata_file_processing_command=process-service-perfdata-file
+#
+#
+#
+host_perfdata_file=/usr/local/pnp4nagios/var/host-perfdata
+host_perfdata_file_template=DATATYPE::HOSTPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tHOSTPERFDATA::$HOSTPERFDATA$\tHOSTCHECKCOMMAND::$HOSTCHECKCOMMAND$\tHOSTSTATE::$HOSTSTATE$\tHOSTSTATETYPE::$HOSTSTATETYPE$
+host_perfdata_file_mode=a
+host_perfdata_file_processing_interval=15
+host_perfdata_file_processing_command=process-host-perfdata-file
+EOT
+
+cat <<'EOT' > /data/etc/naemon/conf.d/pnp4nagios_commands.cfg
+define command{
+       command_name    process-service-perfdata-file
+       command_line    /bin/mv /usr/local/pnp4nagios/var/service-perfdata /usr/local/pnp4nagios/var/spool/service-perfdata.$TIMET$
+}
+define command{
+       command_name    process-host-perfdata-file
+       command_line    /bin/mv /usr/local/pnp4nagios/var/host-perfdata /usr/local/pnp4nagios/var/spool/host-perfdata.$TIMET$
+}
+EOT
+
+cat <<'EOT' >> /data/etc/naemon/conf.d/templates/hosts.cfg
+define host {
+   name host-pnp
+   process_perf_data 1
+   action_url /pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=_HOST_' class='tips' rel='/pnp4nagios/index.php/popup?host=$HOSTNAME$&srv=_HOST_
+   register 0
+}
+EOT
+
+cat <<'EOT' >> /data/etc/naemon/conf.d/templates/services.cfg
+define service {
+   name service-pnp
+   process_perf_data 1
+   action_url /pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$' class='tips' rel='/pnp4nagios/index.php/popup?host=$HOSTNAME$&srv=$SERVICEDESC$
+   register 0
+}
+EOT
+fi
 
 # Inicio de servicios
 service naemon start
