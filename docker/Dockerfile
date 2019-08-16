@@ -45,6 +45,7 @@ RUN apt-get update &&\
 #
 # Install the check_wordpress plugin
 #
+ADD plugins/check_wordpress.php /usr/lib/naemon/plugins/check_wordpress.php
 ADD plugins/check_wordpress /usr/lib/naemon/plugins/check_wordpress
 RUN sync && chmod 755 /usr/lib/naemon/plugins/check_wordpress
 
