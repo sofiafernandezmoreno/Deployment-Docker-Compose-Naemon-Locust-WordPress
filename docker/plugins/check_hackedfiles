@@ -18,7 +18,7 @@ STATE_WARNING=1
 STATE_CRITICAL=2
 STATE_UNKNOWN=3
 
-USAGE="Usage: `basename $0` [-h] [-d DIR] [-b NUM] [-l LOG] [-s w/c] [-x FILE]\n
+USAGE="Uso: `basename $0` [-h] [-d DIR] [-b NUM] [-l LOG] [-s w/c] [-x FILE]\n
         -d [DIR] Directory to check.\n
         -b [NUM] Days back.\n
         -l [FILE] Log file.\n

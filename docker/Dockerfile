@@ -46,6 +46,7 @@ RUN	  gpg --armor --export F8C1CA08A57B9ED7 | apt-key add - && \
 RUN apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
     nagios-nrpe-plugin\
+    nagios-plugins\
     naemon=1.0.10
 
 
@@ -69,6 +70,7 @@ RUN wget -O pnp4nagios.zip https://github.com/lingej/pnp4nagios/archive/master.z
 
 ADD plugins/check_hackedfiles /usr/lib/naemon/plugins/check_hackedfiles
 RUN sync && chmod 755 /usr/lib/naemon/plugins/check_hackedfiles
+
 
 
 
