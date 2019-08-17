@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+
+# Config regular expression
+REG_EXPR[1]="[0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z]['\\\"]\.$"
+REG_EXPR[2]="[\]x[0-9a-zA-Z][0-9a-zA-Z][\]x[0-9a-zA-Z][0-9a-zA-Z][\]x[0-9a-zA-Z][0-9a-zA-Z][\]x[0-9a-zA-Z][0-9a-zA-Z]"
+REG_EXPR[3]="[\]x[0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][\]x[0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z]"
+REG_EXPR[4]="[\]x[0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z]"
+REG_EXPR[5]="_[0O][0O][0O][0O][0O]"
+#REG_EXPR[n]="drun drun"
+# EO Config regular expression
+
+# Collection of regular expressions
+REG_EXPR=$(printf '%s|' "${REG_EXPR[@]}" | sed 's/|$//')
+
+STATE_OK=0
+STATE_WARNING=1
+STATE_CRITICAL=2
+STATE_UNKNOWN=3
+
+USAGE="Uso: `basename $0` [-h] [-d DIR] [-b NUM] [-l LOG] [-s w/c] [-x FILE]\n
+        -d [DIR] Directory to check.\n
+        -b [NUM] Days back.\n
+        -l [FILE] Log file.\n
+        -s [w]arning or [c]ritical: Select state when hacked files are present. Default: w\n
+        -x [FILE] Exclude. List of files to skip check.\n
+	-e [EXTENSIONS] Exclude file extensions. e.g. \"*.jpg|*.png\"\n
+        Please use full paths!
+"
+
+if [ "$1" == "-h" ] || [ "$1" == "" ] ; then
+        echo -e $USAGE
+        exit $STATE_UNKNOWN
+fi
+
+while getopts d:b:l:s:x:e: option
+do
+        case "${option}"
+                in
+                d) CHECK_DIR=${OPTARG};;
+                b) DAYS_BACK=${OPTARG};;
+                l) LOG_FILE=${OPTARG};;
+                s) RETURN_STATE=${OPTARG};;
+                x) EXCLUDE_FILES=${OPTARG};;
+		e) EXCLUDE_FILE_EXTENSIONS=${OPTARG};;
+        esac
+done
+
+### Exit State
+if [ -z $RETURN_STATE ]; then
+        STATE=$STATE_WARNING
+else
+        if [ $RETURN_STATE == "w" ]; then
+                STATE=$STATE_WARNING
+        elif [ $RETURN_STATE == "c" ]; then
+                STATE=$STATE_CRITICAL
+        else
+                echo "Bad value for -s!"
+                echo -e $USAGE
+                exit $STATE_UNKNOWN
+        fi
+fi
+### EO Exit State
+
+### Excludes
+if [ -z $EXCLUDE_FILES ]; then
+        EXCLUDE_PART=""
+else
+	if [ -s "$EXCLUDE_FILES" ]; then 
+		EXCLUDE_PART=$(printf "! -samefile %s " $(cat $EXCLUDE_FILES))
+	else
+		EXCLUDE_PART=""
+	fi
+fi
+### EO Excludes
+
+### Exclude file extensions
+if [ -z $EXCLUDE_FILE_EXTENSIONS ]; then
+        EXCLUDE_EXTENSIONS_PART=""
+else
+        EXCLUDE_EXTENSIONS_PART=$(printf "! -name %s " $(echo $EXCLUDE_FILE_EXTENSIONS | sed 's/|/ /g'))
+fi
+### EO Exclude file extensions
+
+DATE=$(date)
+
+CHECK=$(find $CHECK_DIR -type f \( -name "*" $EXCLUDE_EXTENSIONS_PART $EXCLUDE_PART \) -ctime -$DAYS_BACK -exec grep -lrE "$REG_EXPR" {} \;)
+
+echo "----" >> $LOG_FILE
+echo $DATE >> $LOG_FILE
+
+printf '%s\n' "${CHECK[@]}" >> $LOG_FILE
+
+
+if [ -z "$CHECK" ]; then
+        echo "OK - There are no infected files for the last $DAYS_BACK days."
+        exit $STATE_OK
+else
+        echo "There may be infected files from the last $DAYS_BACK days."
+        exit $STATE
+fi
