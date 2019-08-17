@@ -63,8 +63,28 @@ chown -R www-data:www-data /data/var/log/thruk /data/etc/thruk
 #
 chmod 775 /var/cache/naemon
 
+#Modify pnp4nagios.cfg for Naemon
 
-# if PNP4Nagios setup not already done
+if grep -q 'Nagios' /data/etc/apache2/conf-available/pnp4nagios.conf ; then
+
+echo "Modifying PNP4Nagios config access"
+sed -i 's|Nagios|Naemon |' /data/etc/apache2/conf-available/pnp4nagios.conf 
+fi
+
+if grep -q 'AuthUserFile /usr/local/nagios/etc/htpasswd.users' /data/etc/apache2/conf-available/pnp4nagios.conf ; then
+
+echo "Modifying PNP4Nagios config access users"
+sed -i 's|AuthUserFile /usr/local/nagios/etc/htpasswd.users|AuthUserFile /etc/naemon/htpasswd|' /data/etc/apache2/conf-available/pnp4nagios.conf 
+fi
+
+# #Modify config_local.php for Naemon
+
+# if grep -q '$conf[‘nagios_base’] = “/nagios/cgi-bin”;' /data/usr/local/pnp4nagios/etc/config_local.php; then
+
+# echo "Modify config_local.php for Naemon"
+# sed -i 's|$conf[‘nagios_base’] = “/nagios/cgi-bin”;|$conf[‘nagios_base’] = “/naemon/cgi-bin”;|' /data/usr/local/pnp4nagios/etc/config_local.php
+# fi
+# if PNP4Nagios setup not already done  nable Naemon performance data
 if grep -q 'process_performance_data=0' /data/etc/naemon/naemon.cfg; then
 
 echo "Started PNP4Nagios setup"
