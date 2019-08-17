@@ -86,6 +86,8 @@ RUN mv /etc/httpd/conf.d/pnp4nagios.conf /etc/apache2/conf-available && \
   sed -i 's;RewriteCond\s\+%{REQUEST_URI}\s\+\^/thruk$;RewriteCond %{REQUEST_URI}           ^/(thruk|pnp4nagios);g' /usr/share/thruk/thruk_cookie_auth.include && \
   rm -f /usr/local/pnp4nagios/share/install.php
 
+
+
   # set time zone
 ARG TIME_ZONE=Etc/UTC
 RUN ln -sf "/usr/share/zoneinfo/$TIME_ZONE" /etc/localtime && echo "$TIME_ZONE" > /etc/timezone

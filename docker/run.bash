@@ -68,22 +68,28 @@ chmod 775 /var/cache/naemon
 if grep -q 'Nagios' /data/etc/apache2/conf-available/pnp4nagios.conf ; then
 
 echo "Modifying PNP4Nagios config access"
-sed -i 's|Nagios|Naemon |' /data/etc/apache2/conf-available/pnp4nagios.conf 
+sed -i 's|Nagios|Thruk Monitoring |' /data/etc/apache2/conf-available/pnp4nagios.conf 
 fi
 
 if grep -q 'AuthUserFile /usr/local/nagios/etc/htpasswd.users' /data/etc/apache2/conf-available/pnp4nagios.conf ; then
 
 echo "Modifying PNP4Nagios config access users"
-sed -i 's|AuthUserFile /usr/local/nagios/etc/htpasswd.users|AuthUserFile /etc/naemon/htpasswd|' /data/etc/apache2/conf-available/pnp4nagios.conf 
+sed -i 's|AuthUserFile /usr/local/nagios/etc/htpasswd.users|AuthUserFile /etc/thruk/htpasswd|' /data/etc/apache2/conf-available/pnp4nagios.conf 
 fi
 
-# #Modify config_local.php for Naemon
+#Modify config_local.php for Naemon
 
-# if grep -q '$conf[‘nagios_base’] = “/nagios/cgi-bin”;' /data/usr/local/pnp4nagios/etc/config_local.php; then
+# if grep -q '/nagios/cgi-bin' /data/usr/local/pnp4nagios/etc/config_local.php; then
 
 # echo "Modify config_local.php for Naemon"
-# sed -i 's|$conf[‘nagios_base’] = “/nagios/cgi-bin”;|$conf[‘nagios_base’] = “/naemon/cgi-bin”;|' /data/usr/local/pnp4nagios/etc/config_local.php
+# sed -i 's|/nagios/cgi-bin|/thruk/cgi-bin|' /data/usr/local/pnp4nagios/etc/config_local.php
 # fi
+
+if grep -q "#cookie_path" /data/etc/thruk/thruk.conf; then
+  echo "Cambio de cookie_path"
+  sed -i 's|#cookie_path|cookie_path|' /data/etc/thruk/thruk.conf
+
+fi
 # if PNP4Nagios setup not already done  nable Naemon performance data
 if grep -q 'process_performance_data=0' /data/etc/naemon/naemon.cfg; then
 
@@ -108,7 +114,7 @@ host_perfdata_file_mode=a
 host_perfdata_file_processing_interval=15
 host_perfdata_file_processing_command=process-host-perfdata-file
 EOT
-
+echo "Started include PNP4NAGIOS in commands.cfg"
 cat <<'EOT' > /data/etc/naemon/conf.d/pnp4nagios_commands.cfg
 define command{
        command_name    process-service-perfdata-file
@@ -119,7 +125,7 @@ define command{
        command_line    /bin/mv /usr/local/pnp4nagios/var/host-perfdata /usr/local/pnp4nagios/var/spool/host-perfdata.$TIMET$
 }
 EOT
-
+echo "Started include PNP4NAGIOS in hosts.cfg"
 cat <<'EOT' >> /data/etc/naemon/conf.d/templates/hosts.cfg
 define host {
    name host-pnp
@@ -128,7 +134,7 @@ define host {
    register 0
 }
 EOT
-
+echo "Started include PNP4NAGIOS in commands.cfg"
 cat <<'EOT' >> /data/etc/naemon/conf.d/templates/services.cfg
 define service {
    name service-pnp
@@ -140,6 +146,8 @@ EOT
 fi
 
 # Inicio de servicios
+echo "Inicio de servicio Naemon y NPCD"
+service npcd start
 service naemon start
 /etc/init.d/apache2 start
 
