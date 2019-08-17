@@ -64,11 +64,11 @@ RUN wget -O pnp4nagios.zip https://github.com/lingej/pnp4nagios/archive/master.z
   rm -rf pnp4nagios.zip pnp4nagios-master
 
 #
-# # Install the check_wordpress plugin
+# # Install the check_wp_update plugin
 # #
-# ADD plugins/check_wordpress_updates.php /var/www/html/wp-admin/check_wordpress_updates.php
-# ADD plugins/check_wordpress_updates /usr/lib/naemon/plugins/check_wordpress_updates
-# RUN sync && chmod 755 /usr/lib/naemon/plugins/check_wordpress_updates
+
+ADD plugins/check_hackedfiles /usr/lib/naemon/plugins/check_hackedfiles
+RUN sync && chmod 755 /usr/lib/naemon/plugins/check_hackedfiles
 
 
 
