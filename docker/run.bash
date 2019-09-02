@@ -149,7 +149,7 @@ fi
 echo "Inicio de servicio Naemon y NPCD"
 service npcd start
 service naemon start
-/etc/init.d/apache2 start
+service apache2 start
 
 # Comprobación de estado Apache y Naemon
 trap "salida_exitosa 0;" SIGINT SIGTERM
