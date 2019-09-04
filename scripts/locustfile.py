@@ -1,10 +1,10 @@
 from locust import HttpLocust, TaskSet, task
 
 def login(l):
-    l.client.post("/login", {"username":"naemon", "password":"naemon"})
+    l.client.post("/wp-login.php", {"username":"naemon", "password":"naemon"})
 
 def logout(l):
-    l.client.post("/logout", {"username":"naemon", "password":"naemon"})
+    l.client.post("/wp-login.php?loggedout=true", {"username":"naemon", "password":"naemon"})
 
 
 class UserBehavior(TaskSet):
@@ -19,6 +19,7 @@ class UserBehavior(TaskSet):
     @task(1)
     def host(self):
         self.client.get('/?p=1')
+ 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior
     min_wait = 5000
