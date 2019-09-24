@@ -74,10 +74,9 @@ RUN sync && chmod 755 /usr/lib/naemon/plugins/check_hackedfiles
 
 
 
- RUN rm -rf /etc/naemon/conf.d/localhost.cfg
- ADD definition/wordpresshosts.cfg /etc/naemon/conf.d/wordpresshosts.cfg 
-
- ADD definition/wordpressservices.cfg /etc/naemon/conf.d/wordpressservices.cfg 
+RUN rm -rf /etc/naemon/conf.d/localhost.cfg
+ADD definition/wordpresshosts.cfg /etc/naemon/conf.d/wordpresshosts.cfg 
+ADD definition/wordpressservices.cfg /etc/naemon/conf.d/wordpressservices.cfg 
 COPY thruk_root_redirect.conf /etc/apache2/conf-enabled/
 
 

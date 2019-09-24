@@ -1,7 +1,8 @@
 # Docker Naemon TFG Sofía Fernández Moreno
 
 [Naemon](http://www.naemon.org) imagen lista para su despliegue. 
-1. Configuración de naemon a través del volumen `/data` acceso desde `/var/lib/docker/volumes`
+
+Configuración de naemon a través del volumen `/data` acceso desde `/var/lib/docker/volumes`
 
 
 ## Creación de imagen
@@ -48,15 +49,6 @@ docker build -t chui274/naemontfg .
 ## Gestionar Configuración de Naemon Confiuration
 
 La configuración de Naemon puede ser encontrada en el volumen  `/data/etc/naemon/` y puede ser gestionada a través de su interfaz de monitorización Thruk o el sistema de archivos propio de Naemon.
-
-
-# Nueva actualización: 
-1. Cambios referentes al enlazado del host
-2. Creación de wordpress para generar balanceo de carga
-3. Especificación para comenzar con la creación de la variable de entorno para poder acceder al archivo de configuración de host y enlazarlo con wordpress
-
-
-# Proxima versión: Realización de pruebas de carga a través de la herramienta Locust con balanceo de carga de WordPress
 
 
 
